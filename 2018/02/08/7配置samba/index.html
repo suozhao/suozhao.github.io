@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CentOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="（以下内容均来自网络学习）  root用户执行 1、安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息  [root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName        : sambaEpoch       : 0Versio">
+<meta name="keywords" content="CentOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos 7配置samba">
+<meta property="og:url" content="https://suozhao.github.io/2018/02/08/7配置samba/index.html">
+<meta property="og:site_name" content="Sz">
+<meta property="og:description" content="（以下内容均来自网络学习）  root用户执行 1、安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息  [root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName        : sambaEpoch       : 0Versio">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-08T03:48:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="centos 7配置samba">
+<meta name="twitter:description" content="（以下内容均来自网络学习）  root用户执行 1、安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息  [root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName        : sambaEpoch       : 0Versio">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://suozhao.github.io/2018/02/08/7配置samba/"/>
+
+
+
+
+
+  <title>centos 7配置samba | Sz</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?50ba8d6f518f4b0b7ad2b3a87aac9bfa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sz</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://suozhao.github.io/2018/02/08/7配置samba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/WechatIMG193.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sz">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">centos 7配置samba</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T11:45:14+08:00">
+                2018-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/08/7配置samba/" class="leancloud_visitors" data-flag-title="centos 7配置samba">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>（以下内容均来自网络学习）</p>
+<hr>
+<p><strong>root用户执行</strong></p>
+<h4 id="1、安装Samba"><a href="#1、安装Samba" class="headerlink" title="1、安装Samba"></a>1、安装Samba</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install samba samba-client samba-common        </span><br><span class="line">rpm -qi samba可以查看samba版本信息</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>[root@MiWiFi-R1CM-srv samba]# rpm -qi samba<br>Name        : samba<br>Epoch       : 0<br>Version     : 4.2.10<br>Release     : 6.2.el7_2<br>Architecture: x86_64<br>Install Date: Tue 19 Jul 2016 03:26:55 AM CST<br>Group       : System Environment/Daemons<br>Size        : 1895784<br>License     : GPLv3+ and LGPLv3+<br>Signature   : RSA/SHA256, Fri 24 Jun 2016 04:12:11 AM CST, Key ID 24c6a8a7f4a80eb5<br>Source RPM  : samba-4.2.10-6.2.el7_2.src.rpm<br>Build Date  : Fri 24 Jun 2016 02:38:45 AM CST<br>Build Host  : worker1.bsys.centos.org<br>Relocations : (not relocatable)<br>Packager    : CentOS BuildSystem <a href="http://bugs.centos.org" target="_blank" rel="noopener">http://bugs.centos.org</a><br>Vendor      : CentOS<br>URL         : <a href="http://www.samba.org/" target="_blank" rel="noopener">http://www.samba.org/</a><br>Summary     : Server and Client software to interoperate with Windows machines<br>Description :<br>Samba is the standard Windows interoperability suite of programs for Linux and Unix.<br>[root@MiWiFi-R1CM-srv samba]# </p>
+</blockquote>
+<h4 id="2、设置开机启动："><a href="#2、设置开机启动：" class="headerlink" title="2、设置开机启动："></a>2、设置开机启动：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="3、查看是否设置成功"><a href="#3、查看是否设置成功" class="headerlink" title="3、查看是否设置成功"></a>3、查看是否设置成功</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="4、启动samba服务"><a href="#4、启动samba服务" class="headerlink" title="4、启动samba服务"></a>4、启动samba服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="5、再次查看启动状态"><a href="#5、再次查看启动状态" class="headerlink" title="5、再次查看启动状态"></a>5、再次查看启动状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status smb.service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>[root@MiWiFi-R1CM-srv samba]# systemctl status smb.service<br>● smb.service - Samba SMB Daemon<br>   Loaded: loaded (/usr/lib/systemd/system/smb.service; enabled; vendor preset: disabled)<br>   Active: active (running) since Tue 2016-07-19 03:32:36 CST; 12min ago<br> Main PID: 27455 (smbd)<br>   Status: “smbd: ready to serve connections…”<br>   CGroup: /system.slice/smb.service<br>           ├─27455 /usr/sbin/smbd<br>           ├─27460 /usr/sbin/smbd<br>           └─27601 /usr/sbin/smbd<br>Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: Starting Samba SMB Daemon…<br>Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: smb.service: Supervising process 27455 which is not our child. We’ll most likely not n… exits.<br>Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: Started Samba SMB Daemon.<br>Jul 19 03:32:36 MiWiFi-R1CM-srv smbd[27455]: [2016/07/19 03:32:36.184968,  0] ../lib/util/become_daemon.c:124(daemon_ready)<br>Jul 19 03:32:36 MiWiFi-R1CM-srv smbd[27455]:   STATUS=daemon ‘smbd’ finished starting up and ready to serve connections<br>Hint: Some lines were ellipsized, use -l to show in full.<br>[root@MiWiFi-R1CM-srv samba]# </p>
+</blockquote>
+<p>####6、配置配置文件</p>
+<p>进入目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/samba</span><br></pre></td></tr></table></figure></p>
+<p>备份：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># cp smb.conf smb.conf.backup</span><br></pre></td></tr></table></figure></p>
+<p>修改smb.conf文件，找到“[homes]”，修改以下设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">    log file = /var/log/samba/log.%m</span><br><span class="line">    load printers = yes</span><br><span class="line">    cups options = raw</span><br><span class="line">    server string = Samba Server Version %v</span><br><span class="line">    writeable = yes</span><br><span class="line">    force directory mode = 777</span><br><span class="line">    force create mode = 777</span><br><span class="line">    workgroup = MYGROUP</span><br><span class="line">    security = user</span><br><span class="line">    create mode = 777</span><br><span class="line">    passdb backend = tdbsam</span><br><span class="line">    max log size = 50</span><br></pre></td></tr></table></figure></p>
+<p>新版的samba放在smb.conf最后是无效的</p>
+<p>####7、添加用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd -a username</span><br></pre></td></tr></table></figure></p>
+<p>如果出现bash: smbpasswd: command not found，就是没有安装samba-client了</p>
+<p>附： smbpasswd命令的常用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd -a 增加用户（要增加的用户必须以是系统用户）</span><br><span class="line"></span><br><span class="line">smbpasswd -d 冻结用户，就是这个用户不能在登录了</span><br><span class="line"></span><br><span class="line">smbpasswd -e 恢复用户，解冻用户，让冻结的用户可以在使用</span><br><span class="line"></span><br><span class="line">smbpasswd -n 把用户的密码设置成空.要在global中写入 null passwords -true</span><br><span class="line"></span><br><span class="line">smbpasswd -x 删除用户</span><br></pre></td></tr></table></figure></p>
+<h4 id="8、selinux设置"><a href="#8、selinux设置" class="headerlink" title="8、selinux设置"></a>8、selinux设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getsebool -a | grep samba</span><br><span class="line">setsebool -P samba_enable_home_dirs on</span><br></pre></td></tr></table></figure>
+<p>####9、防火墙，使用新的防火墙firewall添加就可以，比iptables更方便<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --list-services</span><br><span class="line">firewall-cmd --permanent --add-service=samba</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">firewall-cmd --list-services</span><br></pre></td></tr></table></figure></p>
+<p>由于redhat7开始，iptables被firewalld代替了，所以使用firewalld的方法</p>
+<p>关于firewalld的说明，可以看fedora官网介绍</p>
+<p><a href="https://fedoraproject.org/wiki/FirewallD/zh-cn" target="_blank" rel="noopener">https://fedoraproject.org/wiki/FirewallD/zh-cn</a></p>
+<p>####10、重启samba服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart smb.service</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CentOS/" rel="tag"># CentOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/08/大数运算引发的血案/" rel="next" title="大数运算引发的血案">
+                <i class="fa fa-chevron-left"></i> 大数运算引发的血案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/08/Object-create与new的不同/" rel="prev" title="Object.create与new的不同">
+                Object.create与new的不同 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/WechatIMG193.png"
+                alt="Sz" />
+            
+              <p class="site-author-name" itemprop="name">Sz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、安装Samba"><span class="nav-number">1.</span> <span class="nav-text">1、安装Samba</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、设置开机启动："><span class="nav-number">2.</span> <span class="nav-text">2、设置开机启动：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、查看是否设置成功"><span class="nav-number">3.</span> <span class="nav-text">3、查看是否设置成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、启动samba服务"><span class="nav-number">4.</span> <span class="nav-text">4、启动samba服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、再次查看启动状态"><span class="nav-number">5.</span> <span class="nav-text">5、再次查看启动状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8、selinux设置"><span class="nav-number">6.</span> <span class="nav-text">8、selinux设置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("vNiGg7TGS65drLdzgip2FMf5-gzGzoHsz", "izCMcbQ2IccwdrogEs2PzuQJ");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
