@@ -17,7 +17,7 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[大数运算引发的血案]]></title>
+    <title><![CDATA[大数运算初探]]></title>
     <url>%2F2018%2F02%2F08%2F%E5%A4%A7%E6%95%B0%E8%BF%90%E7%AE%97%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88%2F</url>
     <content type="text"><![CDATA[之前再做大数运算的时候在网上查到一个高大上的方法1234567891011function sumStrings(a,b)&#123; var res=&apos;&apos;, c=0; a = a.split(&apos;&apos;); b = b.split(&apos;&apos;); while (a.length || b.length || c)&#123; c += ~~a.pop() + ~~b.pop(); res = c % 10 + res; c = c&gt;9; &#125; return res.replace(/^0+/,&apos;&apos;);&#125; 逼格满满 虽然之前也见过这些操作符,但是一直都没有研究过,今天就来了解一下先来看看~是什么 位运算 NOT 由否定号（~）表示，它是 ECMAScript 中为数不多的与二进制算术有关的运算符之一。 位运算 NOT 是三步的处理过程： 把运算数转换成 32 位数字 把二进制数转换成它的二进制反码 把二进制数转换成浮点数 举个栗子：~8 =&gt; 1000 =&gt; 取反 =&gt; 符号位为1 0111 =&gt; 负数取反符号位不变 =&gt; 符号位1 1000 =&gt; 补码 =&gt; 符号位1 1001 =&gt; -9 在MDN查到这么一句 对任一数值 x 进行按位非操作的结果为 -(x + 1)。例如，~5 结果为 -6。 这对之后的运算就可以省去很多步骤了 再回来看上面的add方法大致的逻辑是 字符串转成数组,每位一个元素 然后把数组最后一位揪出来 做两次取反的计算 因为位运算会对运算数转成32位数字，所以根据尝试对~操作前的流程做了一定的猜测首先先对运算数进行隐式的转换Nuber()，如果是NaN的话会转成0 经过查看规范证实上面的猜测 所以经过取反以后,数字字符串会直接转成数字，undefined会直接转成0，就可以进行下面的计算了 经过测试呢，~~确实比Math.floor性能强那么有限的一点12345678910111213console.time(&apos;~&apos;)for(let i = 0; i &lt; 1000000; i++)&#123; ~~14.14;&#125;console.timeEnd(&apos;~&apos;)~: 2.107177734375msconsole.time(&apos;Math.floor&apos;)for(let i = 0; i &lt; 1000000; i++)&#123; Math.floor(14.14)&#125;console.timeEnd(&apos;Math.floor&apos;)Math.floor: 3.206787109375ms 总结：装逼神器]]></content>
       <tags>
