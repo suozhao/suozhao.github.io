@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Sz,Javascript" />
+  <meta name="keywords" content="CentOS," />
 
 
 
@@ -86,13 +86,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Sz">
-<meta property="og:url" content="https://suozhao.github.io/tags/CentOS/index.html">
+<meta name="description" content="（以下内容均来自网络学习）  root用户执行 安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息 12345678910111213141516171819202122[root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName">
+<meta name="keywords" content="CentOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos 7配置samba">
+<meta property="og:url" content="https://suozhao.github.io/2018/02/08/centOS 7配置samba/index.html">
 <meta property="og:site_name" content="Sz">
+<meta property="og:description" content="（以下内容均来自网络学习）  root用户执行 安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息 12345678910111213141516171819202122[root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-23T07:28:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sz">
+<meta name="twitter:title" content="centos 7配置samba">
+<meta name="twitter:description" content="（以下内容均来自网络学习）  root用户执行 安装Samba12yum -y install samba samba-client samba-common        rpm -qi samba可以查看samba版本信息 12345678910111213141516171819202122[root@MiWiFi-R1CM-srv samba]# rpm -qi sambaName">
 
 
 
@@ -122,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="https://suozhao.github.io/tags/CentOS/"/>
+  <link rel="canonical" href="https://suozhao.github.io/2018/02/08/centOS 7配置samba/"/>
 
 
 
 
 
-  <title>标签: CentOS | Sz</title>
+  <title>centos 7配置samba | Sz</title>
   
 
 
@@ -157,7 +162,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -275,54 +280,183 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>CentOS<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://suozhao.github.io/2018/02/08/centOS 7配置samba/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://pro.cheoo.com:3000/avatars/3?s=290">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sz">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/02/08/centOS 7配置samba/" itemprop="url">
-              
-                <span itemprop="name">centos 7配置samba</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">centos 7配置samba</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-08T11:45:14+08:00"
-              content="2018-02-08" >
-          02-08
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T11:45:14+08:00">
+                2018-02-08
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/08/centOS 7配置samba/" class="leancloud_visitors" data-flag-title="centos 7配置samba">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    </div>
+      
 
+      
+        <p>（以下内容均来自网络学习）</p>
+<hr>
+<p><strong>root用户执行</strong></p>
+<h4 id="安装Samba"><a href="#安装Samba" class="headerlink" title="安装Samba"></a>安装Samba</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install samba samba-client samba-common        </span><br><span class="line">rpm -qi samba可以查看samba版本信息</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@MiWiFi-R1CM-srv samba]# rpm -qi samba</span><br><span class="line">Name        : samba</span><br><span class="line">Epoch       : 0</span><br><span class="line">Version     : 4.2.10</span><br><span class="line">Release     : 6.2.el7_2</span><br><span class="line">Architecture: x86_64</span><br><span class="line">Install Date: Tue 19 Jul 2016 03:26:55 AM CST</span><br><span class="line">Group       : System Environment/Daemons</span><br><span class="line">Size        : 1895784</span><br><span class="line">License     : GPLv3+ and LGPLv3+</span><br><span class="line">Signature   : RSA/SHA256, Fri 24 Jun 2016 04:12:11 AM CST, Key ID 24c6a8a7f4a80eb5</span><br><span class="line">Source RPM  : samba-4.2.10-6.2.el7_2.src.rpm</span><br><span class="line">Build Date  : Fri 24 Jun 2016 02:38:45 AM CST</span><br><span class="line">Build Host  : worker1.bsys.centos.org</span><br><span class="line">Relocations : (not relocatable)</span><br><span class="line">Packager    : CentOS BuildSystem &lt;http://bugs.centos.org&gt;</span><br><span class="line">Vendor      : CentOS</span><br><span class="line">URL         : http://www.samba.org/</span><br><span class="line">Summary     : Server and Client software to interoperate with Windows machines</span><br><span class="line">Description :</span><br><span class="line">Samba is the standard Windows interoperability suite of programs for Linux and Unix.</span><br><span class="line">[root@MiWiFi-R1CM-srv samba]#</span><br></pre></td></tr></table></figure>
+<h4 id="设置开机启动："><a href="#设置开机启动：" class="headerlink" title="设置开机启动："></a>设置开机启动：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="查看是否设置成功"><a href="#查看是否设置成功" class="headerlink" title="查看是否设置成功"></a>查看是否设置成功</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="启动samba服务"><a href="#启动samba服务" class="headerlink" title="启动samba服务"></a>启动samba服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start smb.service</span><br></pre></td></tr></table></figure>
+<h4 id="再次查看启动状态"><a href="#再次查看启动状态" class="headerlink" title="再次查看启动状态"></a>再次查看启动状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status smb.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@MiWiFi-R1CM-srv samba]# systemctl status smb.service</span><br><span class="line">● smb.service - Samba SMB Daemon</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/smb.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Tue 2016-07-19 03:32:36 CST; 12min ago</span><br><span class="line"> Main PID: 27455 (smbd)</span><br><span class="line">   Status: &quot;smbd: ready to serve connections...&quot;</span><br><span class="line">   CGroup: /system.slice/smb.service</span><br><span class="line">           ├─27455 /usr/sbin/smbd</span><br><span class="line">           ├─27460 /usr/sbin/smbd</span><br><span class="line">           └─27601 /usr/sbin/smbd</span><br><span class="line">Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: Starting Samba SMB Daemon...</span><br><span class="line">Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: smb.service: Supervising process 27455 which is not our child. We&apos;ll most likely not n... exits.</span><br><span class="line">Jul 19 03:32:36 MiWiFi-R1CM-srv systemd[1]: Started Samba SMB Daemon.</span><br><span class="line">Jul 19 03:32:36 MiWiFi-R1CM-srv smbd[27455]: [2016/07/19 03:32:36.184968,  0] ../lib/util/become_daemon.c:124(daemon_ready)</span><br><span class="line">Jul 19 03:32:36 MiWiFi-R1CM-srv smbd[27455]:   STATUS=daemon &apos;smbd&apos; finished starting up and ready to serve connections</span><br><span class="line">Hint: Some lines were ellipsized, use -l to show in full.</span><br><span class="line">[root@MiWiFi-R1CM-srv samba]#</span><br></pre></td></tr></table></figure>
+<h4 id="配置配置文件"><a href="#配置配置文件" class="headerlink" title="配置配置文件"></a>配置配置文件</h4><p>进入目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/samba</span><br></pre></td></tr></table></figure></p>
+<p>备份：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># cp smb.conf smb.conf.backup</span><br></pre></td></tr></table></figure></p>
+<p>修改smb.conf文件，找到“[homes]”，修改以下设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">    log file = /var/log/samba/log.%m</span><br><span class="line">    load printers = yes</span><br><span class="line">    cups options = raw</span><br><span class="line">    server string = Samba Server Version %v</span><br><span class="line">    writeable = yes</span><br><span class="line">    force directory mode = 777</span><br><span class="line">    force create mode = 777</span><br><span class="line">    workgroup = MYGROUP</span><br><span class="line">    security = user</span><br><span class="line">    create mode = 777</span><br><span class="line">    passdb backend = tdbsam</span><br><span class="line">    max log size = 50</span><br></pre></td></tr></table></figure></p>
+<p>新版的samba放在smb.conf最后是无效的</p>
+<h4 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd -a username</span><br></pre></td></tr></table></figure>
+<p>如果出现bash: smbpasswd: command not found，就是没有安装samba-client了</p>
+<p>附： smbpasswd命令的常用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd -a 增加用户（要增加的用户必须以是系统用户）</span><br><span class="line"></span><br><span class="line">smbpasswd -d 冻结用户，就是这个用户不能在登录了</span><br><span class="line"></span><br><span class="line">smbpasswd -e 恢复用户，解冻用户，让冻结的用户可以在使用</span><br><span class="line"></span><br><span class="line">smbpasswd -n 把用户的密码设置成空.要在global中写入 null passwords -true</span><br><span class="line"></span><br><span class="line">smbpasswd -x 删除用户</span><br></pre></td></tr></table></figure></p>
+<h4 id="selinux设置"><a href="#selinux设置" class="headerlink" title="selinux设置"></a>selinux设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getsebool -a | grep samba</span><br><span class="line">setsebool -P samba_enable_home_dirs on</span><br></pre></td></tr></table></figure>
+<h4 id="防火墙，使用新的防火墙firewall添加就可以，比iptables更方便"><a href="#防火墙，使用新的防火墙firewall添加就可以，比iptables更方便" class="headerlink" title="防火墙，使用新的防火墙firewall添加就可以，比iptables更方便"></a>防火墙，使用新的防火墙firewall添加就可以，比iptables更方便</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --list-services</span><br><span class="line">firewall-cmd --permanent --add-service=samba</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">firewall-cmd --list-services</span><br></pre></td></tr></table></figure>
+<p>由于redhat7开始，iptables被firewalld代替了，所以使用firewalld的方法</p>
+<p>关于firewalld的说明，可以看fedora官网介绍</p>
+<p><a href="https://fedoraproject.org/wiki/FirewallD/zh-cn" target="_blank" rel="noopener">https://fedoraproject.org/wiki/FirewallD/zh-cn</a></p>
+<h4 id="1重启samba服务"><a href="#1重启samba服务" class="headerlink" title="1重启samba服务"></a>1重启samba服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart smb.service</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CentOS/" rel="tag"># CentOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/08/大数运算初探/" rel="next" title="大数运算初探">
+                <i class="fa fa-chevron-left"></i> 大数运算初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/08/Object-create与new的不同/" rel="prev" title="Object.create与new的不同">
+                Object.create与new的不同 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -330,6 +464,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -350,8 +488,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -406,6 +553,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Samba"><span class="nav-number">1.</span> <span class="nav-text">安装Samba</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置开机启动："><span class="nav-number">2.</span> <span class="nav-text">设置开机启动：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看是否设置成功"><span class="nav-number">3.</span> <span class="nav-text">查看是否设置成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动samba服务"><span class="nav-number">4.</span> <span class="nav-text">启动samba服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再次查看启动状态"><span class="nav-number">5.</span> <span class="nav-text">再次查看启动状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置配置文件"><span class="nav-number">6.</span> <span class="nav-text">配置配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加用户"><span class="nav-number">7.</span> <span class="nav-text">添加用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#selinux设置"><span class="nav-number">8.</span> <span class="nav-text">selinux设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#防火墙，使用新的防火墙firewall添加就可以，比iptables更方便"><span class="nav-number">9.</span> <span class="nav-text">防火墙，使用新的防火墙firewall添加就可以，比iptables更方便</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1重启samba服务"><span class="nav-number">10.</span> <span class="nav-text">1重启samba服务</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -552,6 +715,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
