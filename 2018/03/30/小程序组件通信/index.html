@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Suozhao, Sz, JavaScript, Blog" />
+  <meta name="keywords" content="微信小程序," />
 
 
 
@@ -79,14 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tags">
-<meta property="og:url" content="https://suozhao.github.io/tags/index.html">
+<meta name="description" content="组件与组件behaviors定义和使用 behaviorsbehaviors 是用于组件间代码共享的特性，类似于一些编程语言中的“mixins”或“traits”。 每个 behavior 可以包含一组属性、数据、生命周期函数和方法，组件引用它时，它的属性、数据和方法会被合并到组件中，生命周期函数也会在对应时机被调用。每个组件可以引用多个 behavior 。 behavior 也可以引用其他 b">
+<meta name="keywords" content="微信小程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小程序组件通信">
+<meta property="og:url" content="https://suozhao.github.io/2018/03/30/小程序组件通信/index.html">
 <meta property="og:site_name" content="Sz">
+<meta property="og:description" content="组件与组件behaviors定义和使用 behaviorsbehaviors 是用于组件间代码共享的特性，类似于一些编程语言中的“mixins”或“traits”。 每个 behavior 可以包含一组属性、数据、生命周期函数和方法，组件引用它时，它的属性、数据和方法会被合并到组件中，生命周期函数也会在对应时机被调用。每个组件可以引用多个 behavior 。 behavior 也可以引用其他 b">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-12T09:21:29.000Z">
+<meta property="og:updated_time" content="2018-03-30T04:42:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tags">
+<meta name="twitter:title" content="小程序组件通信">
+<meta name="twitter:description" content="组件与组件behaviors定义和使用 behaviorsbehaviors 是用于组件间代码共享的特性，类似于一些编程语言中的“mixins”或“traits”。 每个 behavior 可以包含一组属性、数据、生命周期函数和方法，组件引用它时，它的属性、数据和方法会被合并到组件中，生命周期函数也会在对应时机被调用。每个组件可以引用多个 behavior 。 behavior 也可以引用其他 b">
 
 
 
@@ -116,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://suozhao.github.io/tags/"/>
+  <link rel="canonical" href="https://suozhao.github.io/2018/03/30/小程序组件通信/"/>
 
 
 
 
 
-  <title>Tags | Sz</title>
+  <title>小程序组件通信 | Sz</title>
   
 
 
@@ -281,40 +285,174 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://suozhao.github.io/2018/03/30/小程序组件通信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sz">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h2 class="post-title" itemprop="name headline">Tags</h2>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-                目前共计 4 个标签
-            </div>
-            <div class="tag-cloud-tags">
-              <a href="/tags/CentOS/" style="font-size: 12px; color: #ccc">CentOS</a> <a href="/tags/JavaScript/" style="font-size: 30px; color: #111">JavaScript</a> <a href="/tags/webpack/" style="font-size: 12px; color: #ccc">webpack</a> <a href="/tags/微信小程序/" style="font-size: 12px; color: #ccc">微信小程序</a>
-            </div>
-          </div>
+          <h2 class="post-title" itemprop="name headline">小程序组件通信</h2>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-30T12:30:33+08:00">
+                2018-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/30/小程序组件通信/" class="leancloud_visitors" data-flag-title="小程序组件通信">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h3 id="组件与组件"><a href="#组件与组件" class="headerlink" title="组件与组件"></a>组件与组件</h3><h4 id="behaviors"><a href="#behaviors" class="headerlink" title="behaviors"></a>behaviors</h4><h5 id="定义和使用-behaviors"><a href="#定义和使用-behaviors" class="headerlink" title="定义和使用 behaviors"></a>定义和使用 behaviors</h5><p><code>behaviors</code> 是用于组件间代码共享的特性，类似于一些编程语言中的“mixins”或“traits”。</p>
+<p>每个 <code>behavior</code> 可以包含一组属性、数据、生命周期函数和方法，组件引用它时，它的属性、数据和方法会被合并到组件中，生命周期函数也会在对应时机被调用。每个组件可以引用多个 <code>behavior</code> 。 <code>behavior</code> 也可以引用其他 <code>behavior</code> 。</p>
+<p><code>behavior</code> 需要使用 <code>Behavior()</code> 构造器定义。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// my-behavior.js</span><br><span class="line">module.exports = Behavior(&#123;</span><br><span class="line">  behaviors: [],</span><br><span class="line">  properties: &#123;</span><br><span class="line">    myBehaviorProperty: &#123;</span><br><span class="line">      type: String</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    myBehaviorData: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  attached: function()&#123;&#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    myBehaviorMethod: function()&#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>组件引用时，在 <code>behaviors</code> 定义段中将它们逐个列出即可。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// my-component.js</span><br><span class="line">var myBehavior = require(&apos;my-behavior&apos;)</span><br><span class="line">Component(&#123;</span><br><span class="line">  behaviors: [myBehavior],</span><br><span class="line">  properties: &#123;</span><br><span class="line">    myProperty: &#123;</span><br><span class="line">      type: String</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    myData: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  attached: function()&#123;&#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    myMethod: function()&#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>在上例中， <code>my-component</code> 组件定义中加入了 <code>my-behavior</code> ，而 my-behavior 中包含有 <code>myBehaviorProperty</code> 属性、 <code>myBehaviorData</code> 数据字段、 <code>myBehaviorMethod</code> 方法和一个 <code>attached</code> 生命周期函数。这将使得 <code>my-component</code> 中最终包含 <code>myBehaviorProperty</code> 、 <code>myProperty</code> 两个属性， <code>myBehaviorData</code> 、 <code>myData</code> 两个数据字段，和 <code>myBehaviorMethod</code> 、 <code>myMethod</code> 两个方法。当组件触发 <code>attached</code> 生命周期时，会依次触发 <code>my-behavior</code> 中的 <code>attached</code> 生命周期函数和 <code>my-component</code> 中的 <code>attached</code> 生命周期函数。</p>
+<h5 id="字段的覆盖和组合规则"><a href="#字段的覆盖和组合规则" class="headerlink" title="字段的覆盖和组合规则"></a>字段的覆盖和组合规则</h5><p>组件和它引用的 <code>behavior</code> 中可以包含同名的字段，对这些字段的处理方法如下：</p>
+<ul>
+<li>如果有同名的属性或方法，组件本身的属性或方法会覆盖 behavior 中的属性或方法，如果引用了多个 behavior ，在定义段中靠后 behavior 中的属性或方法会覆盖靠前的属性或方法；</li>
+<li>如果有同名的数据字段，如果数据是对象类型，会进行对象合并，如果是非对象类型则会进行相互覆盖；</li>
+<li>生命周期函数不会相互覆盖，而是在对应触发时机被逐个调用。如果同一个 behavior 被一个组件多次引用，它定义的生命周期函数只会被执行一次。</li>
+</ul>
+<h3 id="组件与页面"><a href="#组件与页面" class="headerlink" title="组件与页面"></a>组件与页面</h3><h4 id="组件传值-方法到页面"><a href="#组件传值-方法到页面" class="headerlink" title="组件传值/方法到页面"></a>组件传值/方法到页面</h4><p>页面中引用组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;component id&quot;component&quot;&gt;&lt;/component&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//component.js</span><br><span class="line">Component(&#123;</span><br><span class="line">  methods: &#123;</span><br><span class="line">    fun(v)&#123;</span><br><span class="line">      console.log(v)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>在js中可以这样调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Page(&#123;</span><br><span class="line">  onready()&#123;</span><br><span class="line">     this.component = this.selectComponent(&quot;#component&quot;);</span><br><span class="line">     this.component.fun(&quot;value&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="页面传值-方法到组件"><a href="#页面传值-方法到组件" class="headerlink" title="页面传值/方法到组件"></a>页面传值/方法到组件</h4><p>页面中引用组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;component id&quot;component&quot; bind:customevent=&quot;cevent&quot;&gt;&lt;/component&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//index.js</span><br><span class="line">Page(&#123;</span><br><span class="line">  cevent(v)&#123;</span><br><span class="line">      console.log(v) </span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>组件里这样使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Component(&#123;</span><br><span class="line">  methods()&#123;</span><br><span class="line">    fun()&#123;</span><br><span class="line">      var myEventDetail = &#123;&#125; // detail对象，提供给事件监听函数</span><br><span class="line">      var myEventOption = &#123;&#125; // 触发事件的选项</span><br><span class="line">      this.triggerEvent(&apos;customevent&apos;, myEventDetail, myEventOption)</span><br><span class="line">      //triggerEvent函数接受三个值：事件名称、数据、选项值  </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>当调用fun（）时，则会执行index.js里的cevent</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/微信小程序/" rel="tag"># 微信小程序</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/22/正则表达式断言/" rel="next" title="正则表达式断言">
+                <i class="fa fa-chevron-left"></i> 正则表达式断言
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -347,8 +485,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -408,6 +555,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#组件与组件"><span class="nav-number">1.</span> <span class="nav-text">组件与组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#behaviors"><span class="nav-number">1.1.</span> <span class="nav-text">behaviors</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#定义和使用-behaviors"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义和使用 behaviors</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字段的覆盖和组合规则"><span class="nav-number">1.1.2.</span> <span class="nav-text">字段的覆盖和组合规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件与页面"><span class="nav-number">2.</span> <span class="nav-text">组件与页面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#组件传值-方法到页面"><span class="nav-number">2.1.</span> <span class="nav-text">组件传值/方法到页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#页面传值-方法到组件"><span class="nav-number">2.2.</span> <span class="nav-text">页面传值/方法到组件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
