@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Suozhao, Sz, JavaScript, Blog" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="http报文中与缓存相关的首部字段我们先来瞅一眼RFC2616规定的47种http报文首部字段中与缓存相关的字段，事先了解一下能让咱在心里有个底： 通用首部字段（就是请求报文和响应报文都能用上的字段）   字段 说明     Cache-Control 控制缓存的行为   Pragma http1.0的旧社会遗留物,值为”no-cache”时禁用缓存    请求首部字段   字段 说明     i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http缓存机制">
+<meta property="og:url" content="https://suozhao.github.io/2018/05/04/http缓存机制/index.html">
+<meta property="og:site_name" content="Sz">
+<meta property="og:description" content="http报文中与缓存相关的首部字段我们先来瞅一眼RFC2616规定的47种http报文首部字段中与缓存相关的字段，事先了解一下能让咱在心里有个底： 通用首部字段（就是请求报文和响应报文都能用上的字段）   字段 说明     Cache-Control 控制缓存的行为   Pragma http1.0的旧社会遗留物,值为”no-cache”时禁用缓存    请求首部字段   字段 说明     i">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://suozhao.github.io/images/cache3.gif">
+<meta property="og:image" content="https://suozhao.github.io/images/cache4.gif">
+<meta property="og:image" content="https://suozhao.github.io/images/cache5.png">
+<meta property="og:image" content="https://suozhao.github.io/images/cache6.png">
+<meta property="og:image" content="https://suozhao.github.io/images/cache7.png">
+<meta property="og:image" content="https://suozhao.github.io/images/cache8.gif">
+<meta property="og:image" content="https://suozhao.github.io/images/cache9.png">
+<meta property="og:image" content="https://suozhao.github.io/images/cache10.png">
+<meta property="og:updated_time" content="2018-05-04T02:22:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="http缓存机制">
+<meta name="twitter:description" content="http报文中与缓存相关的首部字段我们先来瞅一眼RFC2616规定的47种http报文首部字段中与缓存相关的字段，事先了解一下能让咱在心里有个底： 通用首部字段（就是请求报文和响应报文都能用上的字段）   字段 说明     Cache-Control 控制缓存的行为   Pragma http1.0的旧社会遗留物,值为”no-cache”时禁用缓存    请求首部字段   字段 说明     i">
+<meta name="twitter:image" content="https://suozhao.github.io/images/cache3.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'VOFWPGJIKZ',
+      apiKey: '0bf22aea61cc81b69a4f08495d8bc564',
+      indexName: 'blog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://suozhao.github.io/2018/05/04/http缓存机制/"/>
+
+
+
+
+
+  <title>http缓存机制 | Sz</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?50ba8d6f518f4b0b7ad2b3a87aac9bfa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sz</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://suozhao.github.io/2018/05/04/http缓存机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sz">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">http缓存机制</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-04T10:22:15+08:00">
+                2018-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/04/http缓存机制/" class="leancloud_visitors" data-flag-title="http缓存机制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="http报文中与缓存相关的首部字段"><a href="#http报文中与缓存相关的首部字段" class="headerlink" title="http报文中与缓存相关的首部字段"></a>http报文中与缓存相关的首部字段</h3><p>我们先来瞅一眼<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html" target="_blank" rel="noopener">RFC2616</a>规定的47种http报文首部字段中与缓存相关的字段，事先了解一下能让咱在心里有个底：</p>
+<h4 id="通用首部字段（就是请求报文和响应报文都能用上的字段）"><a href="#通用首部字段（就是请求报文和响应报文都能用上的字段）" class="headerlink" title="通用首部字段（就是请求报文和响应报文都能用上的字段）"></a>通用首部字段（就是请求报文和响应报文都能用上的字段）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache-Control</td>
+<td>控制缓存的行为</td>
+</tr>
+<tr>
+<td>Pragma</td>
+<td>http1.0的旧社会遗留物,值为”no-cache”时禁用缓存</td>
+</tr>
+</tbody>
+</table>
+<h4 id="请求首部字段"><a href="#请求首部字段" class="headerlink" title="请求首部字段"></a>请求首部字段</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>if-Match</td>
+<td>比较ETag是否一致</td>
+</tr>
+<tr>
+<td>if-None-Match</td>
+<td>比较ETag是否不一致</td>
+</tr>
+<tr>
+<td>if-Modified-Since</td>
+<td>比较资源最后更新的事件是否一致</td>
+</tr>
+<tr>
+<td>if-Unmodified-Since</td>
+<td>比较资源最后更新的事件是否不一致</td>
+</tr>
+</tbody>
+</table>
+<h4 id="响应首部字段"><a href="#响应首部字段" class="headerlink" title="响应首部字段"></a>响应首部字段</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ETag</td>
+<td>资源的匹配信息</td>
+</tr>
+</tbody>
+</table>
+<h4 id="实体首部字段"><a href="#实体首部字段" class="headerlink" title="实体首部字段"></a>实体首部字段</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expires</td>
+<td>http1.0的遗留物,实体主体过期的时间</td>
+</tr>
+<tr>
+<td>Last-Modified</td>
+<td>资源的最后一次修改的时间</td>
+</tr>
+</tbody>
+</table>
+<p>后续大体也会依次介绍它们。</p>
+<hr>
+<h3 id="场景模拟"><a href="#场景模拟" class="headerlink" title="场景模拟"></a>场景模拟</h3><p>为方便模拟各种缓存效果，我们建个非常简单的场景。</p>
+<h4 id="页面文件"><a href="#页面文件" class="headerlink" title="页面文件"></a>页面文件</h4><p>我们建个非常简单的html页面，上面只有一个本地样式文件和图片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;title&gt;缓存测试&lt;/title&gt;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;css/reset.css&quot;&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">        &lt;h1&gt;哥只是一个标题&lt;/h1&gt;</span><br><span class="line">        &lt;p&gt;&lt;img src=&quot;img/dog.jpg&quot; /&gt;&lt;/p&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<h4 id="首部字段修改"><a href="#首部字段修改" class="headerlink" title="首部字段修改"></a>首部字段修改</h4><p>有时候一些浏览器会自行给请求首部加上一些字段<i>（如chrome使用F5会强制加上“cache-control:max-age=0”）</i>,会覆盖掉一些字段<i>（比如pragma）</i>的功能；另外有时候我们希望服务器能多少返回一些响应字段。<br>这种情况我们就希望可以手动来修改请求或响应报文上的内容了。那么如何实现呢？这里我们使用<a href="http://www.telerik.com/fiddler" target="_blank" rel="noopener">Fiddler</a>来完成任务。<br>在Fiddler中我们可以通过“bpu XXX”指令来拦截指定请求，然后手动修改请求内容再发给服务器、修改响应内容再发给客户端。<br>以我们的example为例，页面文件走nginx通过 <a href="http://localhost/" target="_blank" rel="noopener">http://localhost/</a> 可直接访问，所以我们直接执行“bpu localhost”拦截所有地址中带有该字样的请求：<br><img src="/images/cache3.gif" alt=""><br>点击被拦截的请求，可以在右栏直接修改报文内容（上半区域是请求报文，下半区域是响应报文），点击黄色的“Break on Response”按钮可以执行下一步（把请求发给服务器），点击绿色的按钮“Run to Completion”可以直接完成整个请求过程：<br><img src="/images/cache4.gif" alt=""><br>通过这个方法我们可以很轻松地模拟出各种http缓存场景。</p>
+<h4 id="浏览器的强制策略"><a href="#浏览器的强制策略" class="headerlink" title="浏览器的强制策略"></a>浏览器的强制策略</h4><p>如上述，当下大多数浏览器在点击刷新按钮或按F5时会自行加上“Cache-Control:max-age=0”请求字段，所以我们先约定成俗——后文提及的“刷新”多指的是选中url地址栏并按回车键<i>（这样不会被强行加上Cache-Control）</i>。<br>事实上有的浏览器还有一些更奇怪的行为，在后续我们回答文章开头问题的时候会提到。</p>
+<hr>
+<h3 id="石器时代的缓存方式"><a href="#石器时代的缓存方式" class="headerlink" title="石器时代的缓存方式"></a>石器时代的缓存方式</h3><p>在 http1.0 时代，给客户端设定缓存方式可通过两个字段——“Pragma”和“Expires”来规范。虽然这两个字段早可抛弃，但为了做http协议的向下兼容，你还是可以看到很多网站依旧会带上这两个字段。</p>
+<h4 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a>Pragma</h4><p>当该字段值为“no-cache”的时候<i>（事实上现在RFC中也仅标明该可选值）</i>，会知会客户端不要对该资源读缓存，即每次都得向服务器发一次请求才行。<br>Pragma属于通用首部字段，在客户端上使用时，常规要求我们往html上加上这段meta元标签（而且可能还得<a href="https://support.microsoft.com/zh-cn/kb/222064" target="_blank" rel="noopener">做些hack放到body后面去</a>）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta http-equiv=&quot;Pragma&quot; content=&quot;no-cache&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>它告诉浏览器每次请求页面时都不要读缓存，都得往服务器发一次请求才行。<br>BUT!!! 事实上这种禁用缓存的形式用处很有限：</p>
+<blockquote>
+<ol>
+<li>仅有IE才能识别这段meta标签含义，其它主流浏览器仅能识别“Cache-Control: no-store”的meta标签<i>（见<a href="http://securityevaluators.com/knowledge/case_studies/caching/" target="_blank" rel="noopener">出处</a>）</i>。</li>
+<li>在IE中识别到该meta标签含义，并不一定会在请求字段加上Pragma，但的确会让当前页面每次都发新请求<i>（仅限页面，页面上的资源则不受影响）</i>。</li>
+</ol>
+</blockquote>
+<p>做了测试后发现也的确如此，这种客户端定义Pragma的形式基本没起到多少作用。<br>不过如果是在响应报文上加上该字段就不一样了：<br><img src="/images/cache5.png" alt=""><br>如上图红框部分是再次刷新页面时生成的请求，这说明禁用缓存生效，预计浏览器在收到服务器的Pragma字段后会对资源进行标记，禁用其缓存行为，进而后续每次刷新页面均能重新发出请求而不走缓存。</p>
+<hr>
+<h4 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h4><p>有了Pragma来禁用缓存，自然也需要有个东西来启用缓存和定义缓存时间，对http1.0而言，Expires就是做这件事的首部字段。<br>Expires的值对应一个GMT<i>（格林尼治时间）</i>，比如“Mon, 22 Jul 2002 11:12:01 GMT”来告诉浏览器资源缓存过期时间，如果还没过该时间点则不发请求。<br>在客户端我们同样可以使用meta标签来知会IE<i>（也仅有IE能识别）</i>页面<i>（同样也只对页面有效，对页面上的资源无效）</i>缓存时间：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta http-equiv=&quot;expires&quot; content=&quot;mon, 18 apr 2016 14:30:00 GMT&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果希望在IE下页面不走缓存，希望每次刷新页面都能发新请求，那么可以把“content”里的值写为“-1”或“0”。<br>注意的是该方式仅仅作为知会IE缓存时间的标记，你并不能在请求或响应报文中找到Expires字段。<br>如果是在服务端报头返回Expires字段，则在任何浏览器中都能正确设置资源缓存的时间：<br><img src="/images/cache6.png" alt=""><br>在上图里，缓存时间设置为一个已过期的时间点<i>（见红框）</i>，则刷新页面将重新发送请求<i>（见蓝框）</i>。<br>那么如果Pragma和Expires一起上阵的话，听谁的？我们试一试就知道了：<br><img src="/images/cache7.png" alt=""><br>我们通过Pragma禁用缓存，又给Expires定义一个还未到期的时间<i>（红框）</i>，刷新页面时发现均发起了新请求<i>（蓝框）</i>，这意味着Pragma字段的优先级会更高。<br>BUT，响应报文中Expires所定义的缓存时间是相对服务器上的时间而言的，如果客户端上的时间跟服务器上的时间不一致<i>（特别是用户修改了自己电脑的系统时间）</i>，那缓存时间可能就没啥意义了。</p>
+<hr>
+<h3 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h3><p>针对上述的“Expires时间是相对服务器而言，无法保证和客户端时间统一”的问题，http1.1新增了 Cache-Control 来定义缓存过期时间，若报文中同时出现了 Pragma、Expires 和 Cache-Control，会以 Cache-Control 为准。<br>Cache-Control也是一个通用首部字段，这意味着它能分别在请求报文和响应报文中使用。在RFC中规范了 Cache-Control 的格式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;Cache-Control&quot; &quot;:&quot; cache-directive</span><br></pre></td></tr></table></figure></p>
+<p>作为请求首部时，cache-directive 的可选值有：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>no-cache</td>
+<td>告知服务器不直接使用缓存,要求向原服务器发起请求</td>
+</tr>
+<tr>
+<td>no-store</td>
+<td>所有内容都不会被保存到缓存或Internet临时文件中</td>
+</tr>
+<tr>
+<td>max-age=delta-seconds</td>
+<td>告知服务器客户端希望接收一个存在时间<i>(Age)</i>不大于delta-seconds秒的资源</td>
+</tr>
+<tr>
+<td>max-stale[=delta-seconds]</td>
+<td>告知服务器,客户端愿意接受一个超过缓存时间的资源,若有定义delta-seconds则为delta-seconds秒,若没有则为任意超出的时间</td>
+</tr>
+<tr>
+<td>min-fresh=delta-seconds</td>
+<td>告知服务器,客户端希望接受一个在小于delta-seconds秒内被更新过的资源</td>
+</tr>
+<tr>
+<td>only-if-cached</td>
+<td>告知服务器,客户端希望获取缓存的内容<i>(若有)</i>,而不用向原服务器发请求</td>
+</tr>
+<tr>
+<td>cache-extension</td>
+<td>自定义扩展值,若服务器不识别该值将被忽略掉</td>
+</tr>
+</tbody>
+</table>
+<p>作为响应首部时，cache-directive 的可选值有：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public</td>
+<td>表明任何情况下都得缓存该资源</td>
+</tr>
+<tr>
+<td>Private[=”field-name”]</td>
+<td>表明返回报文中全部或部分<i>(若制定了field-name则为field-name的字段数据)</i>仅开放给某些用户<i>(服务器指定的share-user)</i>做缓存使用,其他用户则不能缓存这些数据</td>
+</tr>
+<tr>
+<td>no-cache</td>
+<td>不直接使用缓存,要求向服务器发起<i>(新鲜度校验)</i>请求</td>
+</tr>
+<tr>
+<td>no-store</td>
+<td>所有内容都不会被保存到缓存或Internet临时文件中</td>
+</tr>
+<tr>
+<td>no-transform</td>
+<td>告知客户端缓存文件时不得对实体数据做任何改变</td>
+</tr>
+<tr>
+<td>only-if-cached</td>
+<td>告知服务器,客户端希望获取缓存的内容<i>(若有)</i>,而不用向原服务器发请求</td>
+</tr>
+<tr>
+<td>must-revalidate</td>
+<td>当前资源一定是向原服务器发验证请求的,若请求失败会返回504<i>(而非代理服务器上的缓存)</i></td>
+</tr>
+<tr>
+<td>proxy-revalidate</td>
+<td>与must-revalidate类似,但仅能应用于共享缓存</td>
+</tr>
+<tr>
+<td>max-age=delta-sconds</td>
+<td>告知客户端该资源在delta-seconds秒内是新鲜的,无需向服务器发请求</td>
+</tr>
+<tr>
+<td>s-maxage=delta-seconds</td>
+<td>同max-age,但仅应用于共享缓存</td>
+</tr>
+<tr>
+<td>cache-extension</td>
+<td>自定义扩展值,若服务器不识别该值将被忽略</td>
+</tr>
+</tbody>
+</table>
+<p>我们依旧可以在HTML页面加上meta标签来给请求报头加上 Cache-Control 字段：<br>另外 Cache-Control 允许自由组合可选值，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: max-age=3600, must-revalidate</span><br></pre></td></tr></table></figure></p>
+<p>它意味着该资源是从原服务器上取得的，且其缓存（新鲜度）的有效时间为一小时，在后续一小时内，用户重新访问该资源则无须发送请求。<br>当然这种组合的方式也会有些限制，比如 <code>no-cache</code> 就不能和 <code>max-age</code>、<code>min-fresh</code>、<code>max-stale</code> 一起搭配使用。<br>组合的形式还能做一些浏览器行为不一致的兼容处理。例如在IE我们可以使用 <code>no-cache</code> 来防止点击“后退”按钮时页面资源从缓存加载，但在 Firefox 中，需要使用 <code>no-store</code> 才能防止历史回退时浏览器不从缓存中去读取数据，故我们在响应报头加上如下组合值即可做兼容处理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: no-cache, no-store</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="缓存校验字段"><a href="#缓存校验字段" class="headerlink" title="缓存校验字段"></a>缓存校验字段</h3><p>上述的首部字段均能让客户端决定是否向服务器发送请求，比如设置的缓存时间未过期，那么自然直接从本地缓存取数据即可（在chrome下表现为200 from cache），若缓存时间过期了或资源不该直接走缓存，则会发请求到服务器去。</p>
+<p>我们现在要说的问题是，如果客户端向服务器发了请求，那么是否意味着一定要读取回该资源的整个实体内容呢？</p>
+<p>我们试着这么想——客户端上某个资源保存的缓存时间过期了，但这时候其实服务器并没有更新过这个资源，如果这个资源数据量很大，客户端要求服务器再把这个东西重新发一遍过来，是否非常浪费带宽和时间呢？</p>
+<p>答案是肯定的，那么是否有办法让服务器知道客户端现在存有的缓存文件，其实跟自己所有的文件是一致的，然后直接告诉客户端说“这东西你直接用缓存里的就可以了，我这边没更新过呢，就不再传一次过去了”。</p>
+<p>为了让客户端与服务器之间能实现缓存文件是否更新的验证、提升缓存的复用率，Http1.1新增了几个首部字段来做这件事情。</p>
+<h4 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a>Last-Modified</h4><p>服务器将资源传递给客户端时，会将资源最后更改的时间以“Last-Modified: GMT”的形式加在实体首部上一起返回给客户端。</p>
+<p>客户端会为资源标记上该信息，下次再次请求时，会把该信息附带在请求报文中一并带给服务器去做检查，若传递的时间值与服务器上该资源最终修改时间是一致的，则说明该资源没有被修改过，直接返回304状态码即可。</p>
+<p>至于传递标记起来的最终修改时间的请求报文首部字段一共有两个：</p>
+<h5 id="If-Modified-Since-Last-Modified-value"><a href="#If-Modified-Since-Last-Modified-value" class="headerlink" title="If-Modified-Since: Last-Modified-value"></a>If-Modified-Since: Last-Modified-value</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">If-Modified-Since: Thu, 31 Mar 2016 07:07:52 GMT</span><br></pre></td></tr></table></figure>
+<p>该请求首部告诉服务器如果客户端传来的最后修改时间与服务器上的一致，则直接回送304 和响应报头即可。</p>
+<p>当前各浏览器均是使用的该请求首部来向服务器传递保存的 Last-Modified 值。</p>
+<h5 id="If-Unmodified-Since-Last-Modified-value"><a href="#If-Unmodified-Since-Last-Modified-value" class="headerlink" title="If-Unmodified-Since: Last-Modified-value"></a>If-Unmodified-Since: Last-Modified-value</h5><p>告诉服务器，若Last-Modified没有匹配上<i>（资源在服务端的最后更新时间改变了）</i>，则应当返回412(Precondition Failed) 状态码给客户端。</p>
+<p>当遇到下面情况时，If-Unmodified-Since 字段会被忽略：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. Last-Modified值对上了（资源在服务端没有新的修改）；</span><br><span class="line">2. 服务端需返回2XX和412之外的状态码；</span><br><span class="line">3. 传来的指定日期不合法</span><br></pre></td></tr></table></figure></p>
+<p>Last-Modified 说好却也不是特别好，因为如果在服务器上，一个资源被修改了，但其实际内容根本没发生改变，会因为Last-Modified时间匹配不上而返回了整个实体给客户端<i>（即使客户端缓存里有个一模一样的资源）</i>。<br>__</p>
+<h4 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a>ETag</h4><p>为了解决上述Last-Modified可能存在的不准确的问题，Http1.1还推出了 ETag 实体首部字段。</p>
+<p>服务器会通过某种算法，给资源计算得出一个唯一标志符<i>（比如md5标志）</i>，在把资源响应给客户端的时候，会在实体首部加上“ETag: 唯一标识符”一起返回给客户端。</p>
+<p>客户端会保留该 ETag 字段，并在下一次请求时将其一并带过去给服务器。服务器只需要比较客户端传来的ETag跟自己服务器上该资源的ETag是否一致，就能很好地判断资源相对客户端而言是否被修改过了。</p>
+<p>如果服务器发现ETag匹配不上，那么直接以常规GET 200回包形式将新的资源<i>（当然也包括了新的ETag）</i>发给客户端；如果ETag是一致的，则直接返回304知会客户端直接使用本地缓存即可。</p>
+<p>那么客户端是如何把标记在资源上的 ETag 传去给服务器的呢？请求报文中有两个首部字段可以带上 ETag 值：</p>
+<h5 id="If-None-Match-ETag-value"><a href="#If-None-Match-ETag-value" class="headerlink" title="If-None-Match: ETag-value"></a>If-None-Match: ETag-value</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">If-None-Match: &quot;56fcccc8-1699&quot;</span><br></pre></td></tr></table></figure>
+<p>告诉服务端如果 ETag 没匹配上需要重发资源数据，否则直接回送304 和响应报头即可。</p>
+<p>当前各浏览器均是使用的该请求首部来向服务器传递保存的 ETag 值。</p>
+<h5 id="If-Match-ETag-value"><a href="#If-Match-ETag-value" class="headerlink" title="If-Match: ETag-value"></a>If-Match: ETag-value</h5><p>告诉服务器如果没有匹配到ETag，或者收到了“*”值而当前并没有该资源实体，则应当返回412(Precondition Failed) 状态码给客户端。否则服务器直接忽略该字段。</p>
+<p>If-Match 的一个应用场景是，客户端走PUT方法向服务端请求上传/更替资源，这时候可以通过 If-Match 传递资源的ETag。</p>
+<p>需要注意的是，如果资源是走分布式服务器（比如CDN）存储的情况，需要这些服务器上计算ETag唯一值的算法保持一致，才不会导致明明同一个文件，在服务器A和服务器B上生成的ETag却不一样。</p>
+<hr>
+<p>如果 Last-Modified 和 ETag 同时被使用，则要求它们的验证都必须通过才会返回304，若其中某个验证没通过，则服务器会按常规返回资源实体及200状态码。<br>在较新的 nginx 上默认是同时开启了这两个功能的：<br><img src="/images/cache8.gif" alt=""><br>上图的前三条请求是原始请求，接着的三条请求是刷新页面后的新请求，在发新请求之前我们修改了 reset.css 文件，所以它的 Last-Modified 和 ETag 均发生了改变，服务器因此返回了新的文件给客户端<i>（状态值为200）</i>。</p>
+<p>而 dog.jpg 我们没有做修改，其Last-Modified 和 ETag在服务端是保持不变的，故服务器直接返回了304状态码让客户端直接使用缓存的 dog.jpg 即可，没有把实体内容返回给客户端<i>（因为没必要）</i>。</p>
+<hr>
+<h4 id="缓存实践"><a href="#缓存实践" class="headerlink" title="缓存实践"></a>缓存实践</h4><p>当我们在一个项目上做http缓存的应用时，我们还是会把上述提及的大多数首部字段均使用上，例如使用 Expires 来兼容旧的浏览器，使用 Cache-Control 来更精准地利用缓存，然后开启 ETag 跟 Last-Modified 功能进一步复用缓存减少流量。</p>
+<p>那么这里会有一个小问题——Expires 和 Cache-Control 的值应设置为多少合适呢？</p>
+<p>答案是不会有过于精准的值，均需要进行按需评估。</p>
+<p>例如页面链接的请求常规是无须做长时间缓存的，从而保证回退到页面时能重新发出请求，百度首页是用的 Cache-Control:private，腾讯首页则是设定了60秒的缓存，即 Cache-Control:max-age=60。</p>
+<p>而静态资源部分，特别是图片资源，通常会设定一个较长的缓存时间，而且这个时间最好是可以在客户端灵活修改的。以腾讯的某张图片为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://i.gtimg.cn/vipstyle/vipportal/v4/img/common/logo.png?max_age=2592000</span><br></pre></td></tr></table></figure>
+<p>客户端可以通过给图片加上“max_age”的参数来定义服务器返回的缓存时间：<br><img src="/images/cache9.png" alt=""><br>当然这需要有一个前提——静态资源能确保长时间不做改动。如果一个脚本文件响应给客户端并做了长时间的缓存，而服务端在近期修改了该文件的话，缓存了此脚本的客户端将无法及时获得新的数据。</p>
+<p>解决该困扰的办法也简单——把服务侧ETag的那一套也搬到前端来用——页面的静态资源以版本形式发布，常用的方法是在文件名或参数带上一串md5或时间标记符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://hm.baidu.com/hm.js?e23800c454aa573c0ccb16b52665ac26</span><br><span class="line">http://tb1.bdstatic.com/tb/_/tbean_safe_ajax_94e7ca2.js</span><br><span class="line">http://img1.gtimg.com/ninja/2/2016/04/ninja145972803357449.jpg</span><br></pre></td></tr></table></figure></p>
+<p>如果文件被修改了，才更改其标记符内容，这样能确保客户端能及时从服务器收取到新修改的文件。</p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><img src="/images/cache10.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/30/小程序组件通信/" rel="next" title="小程序组件通信">
+                <i class="fa fa-chevron-left"></i> 小程序组件通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Sz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http报文中与缓存相关的首部字段"><span class="nav-number">1.</span> <span class="nav-text">http报文中与缓存相关的首部字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用首部字段（就是请求报文和响应报文都能用上的字段）"><span class="nav-number">1.1.</span> <span class="nav-text">通用首部字段（就是请求报文和响应报文都能用上的字段）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求首部字段"><span class="nav-number">1.2.</span> <span class="nav-text">请求首部字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#响应首部字段"><span class="nav-number">1.3.</span> <span class="nav-text">响应首部字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实体首部字段"><span class="nav-number">1.4.</span> <span class="nav-text">实体首部字段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#场景模拟"><span class="nav-number">2.</span> <span class="nav-text">场景模拟</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#页面文件"><span class="nav-number">2.1.</span> <span class="nav-text">页面文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首部字段修改"><span class="nav-number">2.2.</span> <span class="nav-text">首部字段修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器的强制策略"><span class="nav-number">2.3.</span> <span class="nav-text">浏览器的强制策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#石器时代的缓存方式"><span class="nav-number">3.</span> <span class="nav-text">石器时代的缓存方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pragma"><span class="nav-number">3.1.</span> <span class="nav-text">Pragma</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Expires"><span class="nav-number">3.2.</span> <span class="nav-text">Expires</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Control"><span class="nav-number">4.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存校验字段"><span class="nav-number">5.</span> <span class="nav-text">缓存校验字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Last-Modified"><span class="nav-number">5.1.</span> <span class="nav-text">Last-Modified</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#If-Modified-Since-Last-Modified-value"><span class="nav-number">5.1.1.</span> <span class="nav-text">If-Modified-Since: Last-Modified-value</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#If-Unmodified-Since-Last-Modified-value"><span class="nav-number">5.1.2.</span> <span class="nav-text">If-Unmodified-Since: Last-Modified-value</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ETag"><span class="nav-number">5.2.</span> <span class="nav-text">ETag</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#If-None-Match-ETag-value"><span class="nav-number">5.2.1.</span> <span class="nav-text">If-None-Match: ETag-value</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#If-Match-ETag-value"><span class="nav-number">5.2.2.</span> <span class="nav-text">If-Match: ETag-value</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缓存实践"><span class="nav-number">5.3.</span> <span class="nav-text">缓存实践</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">5.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("vNiGg7TGS65drLdzgip2FMf5-gzGzoHsz", "izCMcbQ2IccwdrogEs2PzuQJ");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
